@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zixora Premium — Mini App</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", "Noto Sans Myanmar", sans-serif;
+    background: #091f5b;
+    color: #fafbff;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 420px; margin: 0 auto; padding: 16px 14px 32px; }
+  .preview-banner {
+    background: #d0e4fd; color: #091f5b; border-radius: 12px;
+    padding: 10px 12px; font-size: 14px; text-align: center; margin-bottom: 14px;
+  }
+  header { text-align: center; padding: 10px 0 16px; }
+  header h1 { font-size: 26px; letter-spacing: 1px; }
+  header p { color: #d0e4fd; font-size: 14px; margin-top: 4px; }
+  /* ---- Menu: horizontal rows, each button its own color ---- */
+  .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .menu button {
+    border: none; border-radius: 16px; padding: 16px 8px; min-height: 76px;
+    font-size: 15px; font-weight: 700; cursor: pointer; line-height: 1.35;
+    font-family: inherit;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.35);
+  }
+  .menu button:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.35); }
+  .m-plan     { background: #16a34a; color: #ffffff; }
+  .m-buy      { background: #2563eb; color: #ffffff; }
+  .m-key      { background: #7c3aed; color: #ffffff; }
+  .m-faq      { background: #0d9488; color: #ffffff; }
+  .m-trial    { background: #ea580c; color: #ffffff; }
+  .m-admin    { background: #e11d48; color: #ffffff; }
+  /* ---- Sections ---- */
+  section {
+    background: #e8f2fe; color: #091f5b; border-radius: 20px;
+    padding: 18px 16px; margin-bottom: 16px;
+  }
+  section h2 { font-size: 19px; margin-bottom: 12px; display: inline-block; border-radius: 10px; padding: 8px 12px; }
+  /* ---- Headers: solid color chips matching their menu-button colors ---- */
+  #plans h2    { background: #16a34a; color: #ffffff; }
+  #buy h2      { background: #2563eb; color: #ffffff; }
+  #keyguide h2 { background: #7c3aed; color: #ffffff; }
+  #faq h2      { background: #0d9488; color: #ffffff; }
+  #trial h2    { background: #ea580c; color: #ffffff; }
+  #admin h2    { background: #e11d48; color: #ffffff; }
+  #trial p     { color: #c2410c; }
+  section h3 { font-size: 16px; margin: 12px 0 6px; }
+  section p, section li { font-size: 15px; line-height: 1.7; }
+  section ol, section ul { padding-left: 22px; }
+  /* ---- Plan cards ---- */
+  .plan {
+    border-radius: 16px; padding: 14px; margin-bottom: 12px; color: #ffffff;
+  }
+  .plan-basic    { background: #334dae; }
+  .plan-standard { background: #1e3a8a; border: 2px solid #6f96d1; }
+  .plan-unlimit  { background: #091f5b; border: 2px solid #6f96d1; }
+  .plan .name { font-size: 17px; font-weight: 700; }
+  .plan .data { font-size: 14px; color: #d0e4fd; margin: 2px 0 6px; }
+  .plan .price { font-size: 22px; font-weight: 800; }
+  .plan button {
+    margin-top: 10px; width: 100%; border: none; border-radius: 12px;
+    padding: 12px; font-size: 15px; font-weight: 700; cursor: pointer;
+    background: #16a34a; color: #ffffff; font-family: inherit;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.35);
+  }
+  .plan button:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.35); }
+  /* ---- Key guide steps ---- */
+  .step { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+  .badge {
+    flex: 0 0 30px; height: 30px; border-radius: 50%;
+    background: #334dae; color: #ffffff; display: flex;
+    align-items: center; justify-content: center; font-weight: 800; font-size: 15px;
+  }
+  .step p { flex: 1; }
+  .step .linkword {
+    background: #091f5b; color: #ffffff; border-radius: 6px; padding: 1px 8px;
+    font-weight: 700; white-space: nowrap;
+  }
+  .connected {
+    background: #16a34a; border: 2px solid #16a34a; color: #ffffff; border-radius: 12px;
+    padding: 12px; text-align: center; font-weight: 700; margin-top: 4px;
+  }
+  .faq-item { margin-bottom: 12px; }
+  .faq-item .q { font-weight: 700; }
+  footer { text-align: center; color: #d0e4fd; font-size: 13px; line-height: 1.6; }
+  #toast {
+    display: none; position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
+    background: #fafbff; color: #091f5b; padding: 12px 18px; border-radius: 12px;
+    font-size: 14px; font-weight: 700; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    max-width: 90vw; text-align: center; z-index: 10;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>ZIXORA PREMIUM</h1>
+    <p>မြန်နှုန်း · လုံခြုံမှု · ရိုးရှင်းမှု</p>
+  </header>
+
+  <!-- 1. BOT MENU REPLICA: horizontal rows, each button its own color -->
+  <nav class="menu" aria-label="Bot menu">
+    <button class="m-plan"   data-scroll="plans">📦<br>Plan နဲ့ ဈေးနှုန်း</button>
+    <button class="m-buy"    data-scroll="buy">🛒<br>ဘယ်လို ဝယ်ရမလဲ</button>
+    <button class="m-key"    data-scroll="keyguide">🔑<br>Key ထည့်နည်း</button>
+    <button class="m-faq"    data-scroll="faq">❓<br>မေးလေ့ရှိတဲ့ မေးခွန်းများ</button>
+    <button class="m-trial"  data-scroll="trial">🎁<br>အစမ်းသုံး Key</button>
+    <button class="m-admin"  data-scroll="admin">👨‍💼<br>Admin နဲ့ ပြောမယ်</button>
+  </nav>
+
+  <!-- 2. PLANS & PRICES -->
+  <section id="plans">
+    <h2>📦 Plan နဲ့ ဈေးနှုန်း</h2>
+    <div class="plan plan-basic">
+      <div class="name">Basic</div>
+      <div class="data">120GB</div>
+      <div class="price">၅,၀၀၀ ကျပ်</div>
+      <button data-pilot="Basic">ဝယ်မယ်</button>
+    </div>
+    <div class="plan plan-standard">
+      <div class="name">Standard</div>
+      <div class="data">250GB</div>
+      <div class="price">၈,၀၀၀ ကျပ်</div>
+      <button data-pilot="Standard">ဝယ်မယ်</button>
+    </div>
+    <div class="plan plan-unlimit">
+      <div class="name">Unlimited</div>
+      <div class="data">အကန့်အသတ်မရှိ</div>
+      <div class="price">၁၅,၀၀၀ ကျပ်</div>
+      <button data-pilot="Unlimited">ဝယ်မယ်</button>
+    </div>
+  </section>
+
+  <!-- HOW TO BUY -->
+  <section id="buy">
+    <h2>🛒 ဘယ်လို ဝယ်ရမလဲ</h2>
+    <ol>
+      <li>အထက်က Plan တစ်ခုကို ရွေးပါ။</li>
+      <li>Admin နဲ့ ဆက်သွယ်ပြီး ဝယ်ယူမှုကို အတည်ပြုပါ။</li>
+      <li>Admin က Key ကို ပို့ပေးပါလိမ့်မယ်။</li>
+      <li>အောက်က Key ထည့်နည်း အတိုင်း app ထဲမှာ ထည့်ပါ။</li>
+    </ol>
+  </section>
+
+  <!-- 3. KEY-IMPORT GUIDE -->
+  <section id="keyguide">
+    <h2>🔑 Key ထည့်နည်း</h2>
+    <div class="step"><div class="badge">1</div><p><span class="linkword">customer sub link</span> ကို copy ကူးပါ။</p></div>
+    <div class="step"><div class="badge">2</div><p>App ရဲ့ Home ကို ဖွင့်ပါ — server မရွေးရသေးတာ စစ်ပါ။</p></div>
+    <div class="step"><div class="badge">3</div><p><strong>+</strong> ခလုတ်ကို နှိပ်ပါ။</p></div>
+    <div class="step"><div class="badge">4</div><p><strong>Import from Clipboard</strong> ကို ရွေးပါ။</p></div>
+    <div class="step"><div class="badge">5</div><p>ပေါ်လာတဲ့ config စာရင်းထဲက <strong>Premium</strong> row ကို နှိပ်ပါ။</p></div>
+    <div class="step"><div class="badge">6</div><p>Connected ဖြစ်မဖြစ် စစ်ပါ။</p></div>
+    <div class="connected">🟢 Connected — အစိမ်းရောင် ပေါ်ရင် သုံးလို့ရပြီ</div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <h2>❓ မေးလေ့ရှိတဲ့ မေးခွန်းများ</h2>
+    <div class="faq-item">
+      <p class="q">Key ကို ဘယ်လိုထည့်ရမလဲ?</p>
+      <p>အထက်က Key ထည့်နည်း အဆင့် ၁–၆ အတိုင်း လုပ်ပါ။</p>
+    </div>
+    <div class="faq-item">
+      <p class="q">အစမ်းသုံး Key ကို ဘယ်လိုရမလဲ?</p>
+      <p>Bot chat ထဲမှာ 🎁 အစမ်းသုံး Key ကို နှိပ်ပါ — တစ်ယောက်ကို တစ်ခု ပေးပါတယ်။</p>
+    </div>
+    <div class="faq-item">
+      <p class="q">ပြဿနာ ရှိရင် ဘယ်သူ့ကို ဆက်သွယ်ရမလဲ?</p>
+      <p>👨‍💼 Admin နဲ့ ပြောမယ် ကို နှိပ်ပြီး bot chat ထဲမှာ မေးပါ — Admin ပြန်ဖြေပေးပါလိမ့်မယ်။</p>
+    </div>
+  </section>
+
+  <!-- 4. TRIAL -->
+  <section id="trial">
+    <h2>🎁 အစမ်းသုံး Key</h2>
+    <p>Zixora ကို အရင် စမ်းသုံးကြည့်ချင်သူတွေအတွက် အစမ်းသုံး Key ရှိပါတယ်။</p>
+  </section>
+
+  <!-- ADMIN -->
+  <section id="admin">
+    <h2>👨‍💼 Admin နဲ့ ပြောမယ်</h2>
+    <p>မေးစရာ၊ ပြဿနာ၊ ဝယ်ယူမှု — ဘာပဲဖြစ်ဖြစ် Admin ကို bot chat ထဲမှာ တိုက်ရိုက် ပြောလို့ရပါတယ်။</p>
+  </section>
+
+  <footer>
+    Zixora Premium — Mini App
+  </footer>
+</div>
+
+<div id="toast"></div>
+<script>
+  // Menu buttons scroll to their section.
+  document.querySelectorAll('[data-scroll]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = document.getElementById(btn.getAttribute('data-scroll'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+  // Plan "buy" buttons: purchases happen in the bot chat; show a note.
+  var toast = document.getElementById('toast');
+  var timer = null;
+  document.querySelectorAll('[data-pilot]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      toast.textContent = btn.getAttribute('data-pilot') +
+        ' ဝယ်ယူမှု အစစ်ကို bot chat ထဲမှာ လုပ်ပါ။';
+      toast.style.display = 'block';
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(function () { toast.style.display = 'none'; }, 3500);
+    });
+  });
+</script>
+</body>
+</html>
